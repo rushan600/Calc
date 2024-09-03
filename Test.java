@@ -3,46 +3,57 @@ import java.util.Scanner;
 public class Test {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        String text = scanner.nextLine();
-        text = text.replace("\"","");
-        text = text.replace(" ","");
-        String[] data = text.split("[+*/-]");
-        String line1 = data[0];
-        if (line1.length() > 10) {
-            throw new IllegalArgumentException("Длина строки должна быть не более 10 символов!");}
-        String line2 = data[1];
-        if (line2.length() > 10) {
-            throw new IllegalArgumentException("Длина строки должна быть не более 10 символов!");}
-        System.out.println(calculator(oper(text),line1,line2));
+
+        String textIn = scanner.nextLine();
+        String[] text = textIn.split("\"");
+        String line1 = text[1];
+        String line2;
+        String oper;
+        if (text[2].replace(" ", "").length() > 1) {
+            oper = text[2].substring(0, 3);
+            line2 = text[2].replace(oper, "");
+        } else {
+            oper = text[2];
+            line2 = text[3];
+        }
+        if (line1.length() > 10 && line2.length() > 10) {
+            throw new IllegalArgumentException("Длина строки должна быть не более 10 символов!");
+        }
+        System.out.println(calculator(line1,line2,oper));
+
+
     }
-    static String calculator (String text,String line1,String line2) {
+    static String calculator(String line1, String line2, String oper) {
         String rez = null;
         int num2;
-        switch (text){
-           case "+":
-               rez = line1 + line2;
-               if (line1.matches("\\d+")) {
-                   throw new IllegalArgumentException("Первый аргумент должна быть строка!");}
-               return "\"" +rez+ "\"";
-           case "-": rez = line1.replace(line2," ");
-               return "\""+rez+"\"";
-           case "*": num2 = key(line2);
-                     rez = line1;
-                     for (int i = 1; i < num2; i++) {
-                     rez += line1;
-                     }
-               if (rez.length() > 40) {
-                   return rez.substring(0, 40) + "...";
-               }
-               return "\"" +rez+ "\"";
-           case "/": num2 = key(line2);
-                     rez = line1.substring(0,num2);
-               return "\"" +rez+ "\"";
-           default: throw new RuntimeException("Введен неправильный оператор");
+        switch (oper) {
+            case " + ": {
+                rez = line1 + line2;
+                break;
+            }
+            case " - ": {
+                rez = line1.replace(line2, "");
+                break;
+            }
+            case " * ": {
+                num2 = num(line2);
+                rez = line1.repeat(num2);
+                if (rez.length() > 40) {
+                    return rez.substring(0, 40) + "...";
+                }
+                break;
+            }
+            case " / ": {
+                num2 = num(line2);
+                rez = line1.substring(0,num2);
+                break;
+            }
+            default: throw new RuntimeException("Введен неправильный оператор");
+        }
+        return "\"" +rez+ "\"";
     }
-    }
-    static int key(String num) {
-        return switch (num) {
+    static int num(String line2) {
+        return switch (line2) {
             case "1" -> 1;
             case "2" -> 2;
             case "3" -> 3;
@@ -56,13 +67,4 @@ public class Test {
             default -> throw new RuntimeException("Диапозон чисен от 1 до 10 включительно");
         };
     }
-
-    static String oper (String text){
-        if (text.contains("+")) return "+";
-        if (text.contains("-")) return "-";
-        if (text.contains("*")) return "*";
-        if (text.contains("/")) return "/";
-        throw new RuntimeException("Не содержит оператор");
-    }
 }
-
