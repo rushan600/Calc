@@ -16,7 +16,7 @@ public class Test {
             oper = text[2];
             line2 = text[3];
         }
-        if (line1.length() > 10 && line2.length() > 10) {
+        if (line1.length() > 10 || line2.length() > 10) {
             throw new IllegalArgumentException("Длина строки должна быть не более 10 символов!");
         }
         System.out.println(calculator(line1,line2,oper));
